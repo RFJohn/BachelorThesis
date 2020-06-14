@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# The directory to put the training data into
+/data/
+
+# ignore all subdirectories of pycharm
+.idea/
