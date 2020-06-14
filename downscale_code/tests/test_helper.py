@@ -26,7 +26,7 @@ def close_equal(first, second):
 
 
 def test_img0():
-    return numpy.arange(8 * 8 * 3).reshape((8, 8, 3))
+    return numpy.arange(8 * 8 * 3).reshape((8, 8, 3)).astype(numpy.float64)
 
 
 def downscaled_img0():

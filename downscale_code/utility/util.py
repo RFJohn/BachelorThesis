@@ -3,7 +3,6 @@ import numpy
 import os
 import torch
 
-
 DOWNSCALE_FACTOR = 4
 
 
@@ -20,8 +19,9 @@ def init_downscale_image(image, downscale_factor=DOWNSCALE_FACTOR):
     assert valid_downsizeable_color_image(image, downscale_factor)
     scaled_x = image.shape[0] // downscale_factor
     scaled_y = image.shape[1] // downscale_factor
+
     if torch.is_tensor(image):
-        return torch.zeros((scaled_x, scaled_y, 3))
+        return torch.zeros((scaled_x, scaled_y, 3), None, image.dtype)
     else:
         return numpy.zeros((scaled_x, scaled_y, 3))
 
