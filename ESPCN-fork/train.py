@@ -1,10 +1,8 @@
 import argparse
-
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchnet as tnt
-import torchvision.transforms as transforms
 from torch.autograd import Variable
 from torch.optim.lr_scheduler import MultiStepLR
 from torch.utils.data import DataLoader
@@ -12,7 +10,7 @@ from torchnet.engine import Engine
 from torchnet.logger import VisdomPlotLogger
 from tqdm import tqdm
 
-from data_utils import DatasetFromFolder
+from ShiftDataLoader import ShiftDataLoader
 from model import Net
 from psnrmeter import PSNRMeter
 
@@ -70,22 +68,28 @@ def on_end_epoch(state):
     torch.save(model.state_dict(), 'epochs/epoch_%d_%d.pt' % (UPSCALE_FACTOR, state['epoch']))
 
 
+def train_data_loader(data_folder, upscale_factor):
+    train_set = ShiftDataLoader("train-data", data_folder, upscale_factor)
+    return DataLoader(dataset=train_set, num_workers=4, batch_size=64, shuffle=True)
+
+
+def val_data_loader(data_folder, upscale_factor):
+    val_set = ShiftDataLoader("val-data", data_folder, upscale_factor)
+    return DataLoader(dataset=val_set, num_workers=4, batch_size=64, shuffle=False)
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Train Super Resolution')
-    parser.add_argument('--upscale_factor', default=3, type=int, help='super resolution upscale factor')
+    parser.add_argument('--upscale_factor', default=4, type=int, help='super resolution upscale factor')
     parser.add_argument('--num_epochs', default=100, type=int, help='super resolution epochs number')
     opt = parser.parse_args()
 
     UPSCALE_FACTOR = opt.upscale_factor
     NUM_EPOCHS = opt.num_epochs
 
-    train_set = DatasetFromFolder('data/train', upscale_factor=UPSCALE_FACTOR, input_transform=transforms.ToTensor(),
-                                  target_transform=transforms.ToTensor())
-    val_set = DatasetFromFolder('data/val', upscale_factor=UPSCALE_FACTOR, input_transform=transforms.ToTensor(),
-                                target_transform=transforms.ToTensor())
-    train_loader = DataLoader(dataset=train_set, num_workers=4, batch_size=64, shuffle=True)
-    val_loader = DataLoader(dataset=val_set, num_workers=4, batch_size=64, shuffle=False)
+    train_loader = train_data_loader("control", UPSCALE_FACTOR)
+    val_loader = val_data_loader("control", UPSCALE_FACTOR)
 
     model = Net(upscale_factor=UPSCALE_FACTOR)
     criterion = nn.MSELoss()
