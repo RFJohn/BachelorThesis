@@ -5,12 +5,15 @@ import os
 import datetime
 
 # hard coded directories
+top_folder = "train-data"
 div2k_dir = "C:/Users/John/Documents/BA/DIV2K Dataset/DIV2K_train_HR"
-origin_dir = "data/original"
-control_dir = "data/control"  # no shift directory
-half_dir = "data/half_shift"
-quarter_dir = "data/quarter_shift"
-random0_dir = "data/random0_shift"
+# top_folder = "val-data"
+# div2k_dir = "C:/Users/John/Documents/BA/DIV2K Dataset/DIV2K_valid_HR"
+origin_dir = f"{top_folder}/original"
+control_dir = f"{top_folder}/control"  # no shift directory
+half_dir = f"{top_folder}/half_shift"
+quarter_dir = f"{top_folder}/quarter_shift"
+random0_dir = f"{top_folder}/random0_shift"
 
 
 def div2k_name(number):
@@ -48,19 +51,12 @@ def create_random0_img(image, padded_name):
     util.save_array_image(random0_img, random0_name)
 
 
-if __name__ == "__main__":
-    # create all necessary directories
-    util.create_dir(origin_dir)
-    util.create_dir(control_dir)
-    util.create_dir(half_dir)
-    util.create_dir(quarter_dir)
-    util.create_dir(random0_dir)
-
+def create_dataset(start, stop):
     print(f"{datetime.datetime.now().time()}: Start")
-    for i in range(1, 801):
+    for i in range(start, stop):
         img = util.load_img_ndarray(div2k_name(i))
 
-        samples_per_img = 13
+        samples_per_img = 10
         for j in range(samples_per_img):
             image_number = (i - 1) * samples_per_img + j
             img_name = f"{image_number:05d}.png"
@@ -73,5 +69,16 @@ if __name__ == "__main__":
             create_random0_img(origin_img, img_name)
 
         print(f"{datetime.datetime.now().time()}: {i} done")
-
     print(f"{datetime.datetime.now().time()}: Finished")
+
+
+if __name__ == "__main__":
+    # create all necessary directories
+    util.create_dir(origin_dir)
+    util.create_dir(control_dir)
+    util.create_dir(half_dir)
+    util.create_dir(quarter_dir)
+    util.create_dir(random0_dir)
+
+    create_dataset(1, 801)  # train_HR
+    # create_dataset(801, 901)  # valid_HR
