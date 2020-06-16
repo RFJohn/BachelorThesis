@@ -129,7 +129,8 @@ dmypy.json
 .pyre/
 
 # The directory to put the training data into
-/data/
+/train-data/
+/val-data/
 
 # ignore all subdirectories of pycharm
 .idea/

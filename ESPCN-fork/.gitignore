@@ -1,0 +1,2 @@
+# ignore the intermediate results from epoch training
+/epochs/
