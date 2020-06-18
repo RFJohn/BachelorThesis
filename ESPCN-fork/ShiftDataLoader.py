@@ -14,7 +14,7 @@ class ShiftDataLoader(Dataset):
         # data paths are relative but still somewhat hard coded, especially the original data folder name
         self.image_dir = f"../{folder_name}/{data_folder}/{data_folder}-"
         self.target_dir = f"../{folder_name}/original/original-"
-        self.number_of_images = len([file for file in listdir(self.image_dir) if is_image_file(file)])
+        self.number_of_images = len([f for f in listdir(f"../{folder_name}/{data_folder}") if is_image_file(f)])
         self.input_transform = input_transform
         self.target_transform = target_transform
 
