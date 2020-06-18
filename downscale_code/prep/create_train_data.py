@@ -47,12 +47,13 @@ def create_dataset(start, stop, samples_per_img):
 
     util.create_file(snipped_coords_txt, f"start={start}\nstop={stop}\nsamples={samples_per_img}\n")
 
+    image_number = 0
     for i in range(start, stop):
         img = util.load_img_ndarray(div2k_name(i))
 
         for j in range(samples_per_img):
-            image_number = (i - 1) * samples_per_img + j
             img_name = f"{image_number:05d}.png"
+            image_number += 1
 
             origin_img = extract_origin_img(img, img_name)
 
