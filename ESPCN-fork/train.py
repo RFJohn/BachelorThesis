@@ -8,6 +8,7 @@ from torch.optim.lr_scheduler import MultiStepLR
 from torch.utils.data import DataLoader
 from torchnet.engine import Engine
 from torchnet.logger import VisdomPlotLogger
+from torchnet.logger import VisdomSaver
 from tqdm import tqdm
 
 from ShiftDataLoader import ShiftDataLoader
@@ -109,10 +110,10 @@ if __name__ == "__main__":
     meter_loss = tnt.meter.AverageValueMeter()
     meter_psnr = PSNRMeter()
 
-    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"}, env=current_mode)
-    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"}, env=current_mode)
-    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"}, env=current_mode)
-    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"}, env=current_mode)
+    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
+    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
+    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
+    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
 
     engine.hooks['on_sample'] = on_sample
     engine.hooks['on_forward'] = on_forward
@@ -120,6 +121,8 @@ if __name__ == "__main__":
     engine.hooks['on_end_epoch'] = on_end_epoch
 
     engine.train(processor, train_loader, maxepoch=NUM_EPOCHS, optimizer=optimizer)
+
+    VisdomSaver(envs=["main"]).save()
 
     # mode 2
     current_mode = "half"
@@ -142,10 +145,10 @@ if __name__ == "__main__":
     meter_loss = tnt.meter.AverageValueMeter()
     meter_psnr = PSNRMeter()
 
-    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"}, env=current_mode)
-    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"}, env=current_mode)
-    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"}, env=current_mode)
-    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"}, env=current_mode)
+    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
+    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
+    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
+    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
 
     engine.hooks['on_sample'] = on_sample
     engine.hooks['on_forward'] = on_forward
@@ -153,6 +156,8 @@ if __name__ == "__main__":
     engine.hooks['on_end_epoch'] = on_end_epoch
 
     engine.train(processor, train_loader, maxepoch=NUM_EPOCHS, optimizer=optimizer)
+
+    VisdomSaver(envs=["main"]).save()
 
     # mode 3
     current_mode = "quarter"
@@ -175,10 +180,10 @@ if __name__ == "__main__":
     meter_loss = tnt.meter.AverageValueMeter()
     meter_psnr = PSNRMeter()
 
-    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"}, env=current_mode)
-    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"}, env=current_mode)
-    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"}, env=current_mode)
-    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"}, env=current_mode)
+    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
+    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
+    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
+    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
 
     engine.hooks['on_sample'] = on_sample
     engine.hooks['on_forward'] = on_forward
@@ -186,6 +191,8 @@ if __name__ == "__main__":
     engine.hooks['on_end_epoch'] = on_end_epoch
 
     engine.train(processor, train_loader, maxepoch=NUM_EPOCHS, optimizer=optimizer)
+
+    VisdomSaver(envs=["main"]).save()
 
     # mode 4
     current_mode = "random0"
@@ -208,10 +215,10 @@ if __name__ == "__main__":
     meter_loss = tnt.meter.AverageValueMeter()
     meter_psnr = PSNRMeter()
 
-    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"}, env=current_mode)
-    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"}, env=current_mode)
-    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"}, env=current_mode)
-    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"}, env=current_mode)
+    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
+    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
+    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
+    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
 
     engine.hooks['on_sample'] = on_sample
     engine.hooks['on_forward'] = on_forward
@@ -219,3 +226,5 @@ if __name__ == "__main__":
     engine.hooks['on_end_epoch'] = on_end_epoch
 
     engine.train(processor, train_loader, maxepoch=NUM_EPOCHS, optimizer=optimizer)
+
+    VisdomSaver(envs=["main"]).save()
