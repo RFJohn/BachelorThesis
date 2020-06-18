@@ -40,7 +40,7 @@ def reset_meters():
 
 def on_forward(state):
     meter_psnr.add(state['output'].data, state['sample'][1])
-    meter_loss.add(state['loss'].data[0])
+    meter_loss.add(state['loss'].item())
 
 
 def on_start_epoch(state):
@@ -109,10 +109,10 @@ if __name__ == "__main__":
     meter_loss = tnt.meter.AverageValueMeter()
     meter_psnr = PSNRMeter()
 
-    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
-    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
-    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
-    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
+    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"}, env=current_mode)
+    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"}, env=current_mode)
+    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"}, env=current_mode)
+    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"}, env=current_mode)
 
     engine.hooks['on_sample'] = on_sample
     engine.hooks['on_forward'] = on_forward
@@ -142,10 +142,10 @@ if __name__ == "__main__":
     meter_loss = tnt.meter.AverageValueMeter()
     meter_psnr = PSNRMeter()
 
-    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
-    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
-    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
-    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
+    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"}, env=current_mode)
+    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"}, env=current_mode)
+    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"}, env=current_mode)
+    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"}, env=current_mode)
 
     engine.hooks['on_sample'] = on_sample
     engine.hooks['on_forward'] = on_forward
@@ -175,10 +175,10 @@ if __name__ == "__main__":
     meter_loss = tnt.meter.AverageValueMeter()
     meter_psnr = PSNRMeter()
 
-    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
-    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
-    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
-    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
+    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"}, env=current_mode)
+    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"}, env=current_mode)
+    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"}, env=current_mode)
+    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"}, env=current_mode)
 
     engine.hooks['on_sample'] = on_sample
     engine.hooks['on_forward'] = on_forward
@@ -208,10 +208,10 @@ if __name__ == "__main__":
     meter_loss = tnt.meter.AverageValueMeter()
     meter_psnr = PSNRMeter()
 
-    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
-    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
-    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
-    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
+    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"}, env=current_mode)
+    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"}, env=current_mode)
+    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"}, env=current_mode)
+    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"}, env=current_mode)
 
     engine.hooks['on_sample'] = on_sample
     engine.hooks['on_forward'] = on_forward
