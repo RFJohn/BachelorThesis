@@ -59,3 +59,13 @@ def create_random_img_array_uint8(size_x, size_y, size_z=3):
 
 def cut_edges(img, width):
     return img[width:-width, width:-width]
+
+
+def append_to_file(file_name, append_string):
+    with open(file_name, "a") as file:
+        file.write(append_string)
+
+
+def create_file(file_name, optional_text=""):
+    with open(file_name, "w") as file:
+        file.write(optional_text)

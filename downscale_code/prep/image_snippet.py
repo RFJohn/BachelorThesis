@@ -10,13 +10,25 @@ def extract_random_snippet(image, snippet_x=256, snippet_y=256):
     start_y = numpy.random.randint(0, max_y)
     end_x = start_x + snippet_x
     end_y = start_y + snippet_y
-    return image[start_x:end_x, start_y:end_y]
+    return image[start_x:end_x, start_y:end_y], start_x, start_y
 
 
 def images_from_dir(directory_name=None):
     for entry in os.scandir(directory_name):
         if entry.name.endswith(".png") and entry.is_file():
             yield entry
+
+
+def no_shift():
+    return 0, 0
+
+
+def half_shift():
+    return 0, 0.5
+
+
+def quarter_shift():
+    return 0, 0.25, 0.5, 0.75
 
 
 def random0_shifts():
