@@ -50,8 +50,8 @@ def on_start_epoch(state):
 
 
 def on_end_epoch(state):
-    print('[Epoch %d] Train Loss: %.4f (PSNR: %.2f db)' % (
-        state['epoch'], meter_loss.value()[0], meter_psnr.value()))
+    print('[%s][Epoch %d] Train Loss: %.4f (PSNR: %.2f db)' % (
+        current_mode, state['epoch'], meter_loss.value()[0], meter_psnr.value()))
 
     train_loss_logger.log(state['epoch'], meter_loss.value()[0])
     train_psnr_logger.log(state['epoch'], meter_psnr.value())
@@ -62,10 +62,10 @@ def on_end_epoch(state):
     val_loss_logger.log(state['epoch'], meter_loss.value()[0])
     val_psnr_logger.log(state['epoch'], meter_psnr.value())
 
-    print('[Epoch %d] Val Loss: %.4f (PSNR: %.2f db)' % (
-        state['epoch'], meter_loss.value()[0], meter_psnr.value()))
+    print('[%s][Epoch %d] Val Loss: %.4f (PSNR: %.2f db)' % (
+        current_mode, state['epoch'], meter_loss.value()[0], meter_psnr.value()))
 
-    torch.save(model.state_dict(), 'epochs/epoch_%d_%d.pt' % (UPSCALE_FACTOR, state['epoch']))
+    torch.save(model.state_dict(), f"epochs/epoch_{UPSCALE_FACTOR}_{current_mode}_{state['epoch']}.pt")
 
 
 def train_data_loader(data_folder, upscale_factor):
@@ -88,8 +88,11 @@ if __name__ == "__main__":
     UPSCALE_FACTOR = opt.upscale_factor
     NUM_EPOCHS = opt.num_epochs
 
-    train_loader = train_data_loader("control", UPSCALE_FACTOR)
-    val_loader = val_data_loader("control", UPSCALE_FACTOR)
+    # mode 1
+    current_mode = "control"
+
+    train_loader = train_data_loader(current_mode, UPSCALE_FACTOR)
+    val_loader = val_data_loader(current_mode, UPSCALE_FACTOR)
 
     model = Net(upscale_factor=UPSCALE_FACTOR)
     criterion = nn.MSELoss()
@@ -106,10 +109,109 @@ if __name__ == "__main__":
     meter_loss = tnt.meter.AverageValueMeter()
     meter_psnr = PSNRMeter()
 
-    train_loss_logger = VisdomPlotLogger('line', opts={'title': 'Train Loss'})
-    train_psnr_logger = VisdomPlotLogger('line', opts={'title': 'Train PSNR'})
-    val_loss_logger = VisdomPlotLogger('line', opts={'title': 'Val Loss'})
-    val_psnr_logger = VisdomPlotLogger('line', opts={'title': 'Val PSNR'})
+    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
+    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
+    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
+    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
+
+    engine.hooks['on_sample'] = on_sample
+    engine.hooks['on_forward'] = on_forward
+    engine.hooks['on_start_epoch'] = on_start_epoch
+    engine.hooks['on_end_epoch'] = on_end_epoch
+
+    engine.train(processor, train_loader, maxepoch=NUM_EPOCHS, optimizer=optimizer)
+
+    # mode 2
+    current_mode = "half"
+
+    train_loader = train_data_loader(current_mode, UPSCALE_FACTOR)
+    val_loader = val_data_loader(current_mode, UPSCALE_FACTOR)
+
+    model = Net(upscale_factor=UPSCALE_FACTOR)
+    criterion = nn.MSELoss()
+    if torch.cuda.is_available():
+        model = model.cuda()
+        criterion = criterion.cuda()
+
+    print('# parameters:', sum(param.numel() for param in model.parameters()))
+
+    optimizer = optim.Adam(model.parameters(), lr=1e-2)
+    scheduler = MultiStepLR(optimizer, milestones=[30, 80], gamma=0.1)
+
+    engine = Engine()
+    meter_loss = tnt.meter.AverageValueMeter()
+    meter_psnr = PSNRMeter()
+
+    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
+    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
+    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
+    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
+
+    engine.hooks['on_sample'] = on_sample
+    engine.hooks['on_forward'] = on_forward
+    engine.hooks['on_start_epoch'] = on_start_epoch
+    engine.hooks['on_end_epoch'] = on_end_epoch
+
+    engine.train(processor, train_loader, maxepoch=NUM_EPOCHS, optimizer=optimizer)
+
+    # mode 3
+    current_mode = "quarter"
+
+    train_loader = train_data_loader(current_mode, UPSCALE_FACTOR)
+    val_loader = val_data_loader(current_mode, UPSCALE_FACTOR)
+
+    model = Net(upscale_factor=UPSCALE_FACTOR)
+    criterion = nn.MSELoss()
+    if torch.cuda.is_available():
+        model = model.cuda()
+        criterion = criterion.cuda()
+
+    print('# parameters:', sum(param.numel() for param in model.parameters()))
+
+    optimizer = optim.Adam(model.parameters(), lr=1e-2)
+    scheduler = MultiStepLR(optimizer, milestones=[30, 80], gamma=0.1)
+
+    engine = Engine()
+    meter_loss = tnt.meter.AverageValueMeter()
+    meter_psnr = PSNRMeter()
+
+    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
+    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
+    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
+    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
+
+    engine.hooks['on_sample'] = on_sample
+    engine.hooks['on_forward'] = on_forward
+    engine.hooks['on_start_epoch'] = on_start_epoch
+    engine.hooks['on_end_epoch'] = on_end_epoch
+
+    engine.train(processor, train_loader, maxepoch=NUM_EPOCHS, optimizer=optimizer)
+
+    # mode 4
+    current_mode = "random0"
+
+    train_loader = train_data_loader(current_mode, UPSCALE_FACTOR)
+    val_loader = val_data_loader(current_mode, UPSCALE_FACTOR)
+
+    model = Net(upscale_factor=UPSCALE_FACTOR)
+    criterion = nn.MSELoss()
+    if torch.cuda.is_available():
+        model = model.cuda()
+        criterion = criterion.cuda()
+
+    print('# parameters:', sum(param.numel() for param in model.parameters()))
+
+    optimizer = optim.Adam(model.parameters(), lr=1e-2)
+    scheduler = MultiStepLR(optimizer, milestones=[30, 80], gamma=0.1)
+
+    engine = Engine()
+    meter_loss = tnt.meter.AverageValueMeter()
+    meter_psnr = PSNRMeter()
+
+    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
+    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
+    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
+    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
 
     engine.hooks['on_sample'] = on_sample
     engine.hooks['on_forward'] = on_forward
