@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 from ShiftDataLoader import ShiftDataLoader, ShiftXYDataLoader
 from model import Net, NetXY
-from psnrmeter import PSNRMeter
+from psnrmeter import PSNRMeter, PSNRXYMeter
 
 
 def processor(sample):
@@ -98,7 +98,7 @@ def setup_train(xy_mode=True):
     scheduler = MultiStepLR(optimizer, milestones=[30, 80], gamma=0.1)
 
     meter_loss = tnt.meter.AverageValueMeter()
-    meter_psnr = PSNRMeter()
+    meter_psnr = PSNRXYMeter() if xy_mode else PSNRMeter()
 
 
 def setup_logger():
