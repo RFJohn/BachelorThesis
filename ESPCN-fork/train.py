@@ -65,10 +65,11 @@ def on_end_epoch(state):
     print('[%s][Epoch %d] Val Loss: %.4f (PSNR: %.2f db)' % (
         current_mode, state['epoch'], meter_loss.value()[0], meter_psnr.value()))
 
-    torch.save(model.state_dict(), f"epochs/epoch_{UPSCALE_FACTOR}_{current_mode}_{state['epoch']}.pt")
+    xy_string = "_XY" if xy_mode else ""
+    torch.save(model.state_dict(), f"epochs/epoch_{UPSCALE_FACTOR}_{current_mode}{xy_string}_{state['epoch']}.pt")
 
 
-def data_loader(xy_mode):
+def data_loader():
     if xy_mode:
         train_set = ShiftXYDataLoader("train-data", current_mode, UPSCALE_FACTOR)
         val_set = ShiftXYDataLoader("val-data", current_mode, UPSCALE_FACTOR)
@@ -81,10 +82,10 @@ def data_loader(xy_mode):
     return _train_loader, _val_loader
 
 
-def setup_train(xy_mode=True):
+def setup_train():
     global train_loader, val_loader, model, criterion, optimizer, scheduler, meter_loss, meter_psnr
 
-    train_loader, val_loader = data_loader(xy_mode)
+    train_loader, val_loader = data_loader()
 
     model = NetXY(UPSCALE_FACTOR) if xy_mode else Net(UPSCALE_FACTOR)
     criterion = nn.MSELoss()
@@ -94,7 +95,7 @@ def setup_train(xy_mode=True):
 
     print('# parameters:', sum(param.numel() for param in model.parameters()))
 
-    optimizer = optim.Adam(model.parameters(), lr=1e-2)
+    optimizer = optim.Adam(model.parameters(), lr=1e-3)
     scheduler = MultiStepLR(optimizer, milestones=[30, 80], gamma=0.1)
 
     meter_loss = tnt.meter.AverageValueMeter()
@@ -138,7 +139,7 @@ if __name__ == "__main__":
     # Command line inputs from original github repo
     parser = argparse.ArgumentParser(description='Train Super Resolution')
     parser.add_argument('--upscale_factor', default=4, type=int, help='super resolution upscale factor')
-    parser.add_argument('--num_epochs', default=1, type=int, help='super resolution epochs number')
+    parser.add_argument('--num_epochs', default=200, type=int, help='super resolution epochs number')
     opt = parser.parse_args()
 
     UPSCALE_FACTOR = opt.upscale_factor
@@ -146,6 +147,7 @@ if __name__ == "__main__":
 
     # train different modes
     current_mode = None
+    xy_mode = True
     train("control")
     train("half")
     train("quarter")
