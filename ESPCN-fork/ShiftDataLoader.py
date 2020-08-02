@@ -38,9 +38,11 @@ class ShiftXYDataLoader(ShiftDataLoader):
 
     @staticmethod
     def load_xy(top_folder, data_folder):
-        x = np.loadtxt(f"../{top_folder}/{data_folder}/x_coords.txt").astype(np.float32)
-        y = np.loadtxt(f"../{top_folder}/{data_folder}/y_coords.txt").astype(np.float32)
-        return x, y
+        x = np.loadtxt(f"../{top_folder}/{data_folder}/x_coords.txt")
+        y = np.loadtxt(f"../{top_folder}/{data_folder}/y_coords.txt")
+        x = x / (64.0 / 2.0) - 1.0
+        y = y / (64.0 / 2.0) - 1.0
+        return x.astype(np.float32), y.astype(np.float32)
 
     def __getitem__(self, index):
         image, target = self.open_images(index)
