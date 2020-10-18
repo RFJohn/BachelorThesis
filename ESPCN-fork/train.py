@@ -103,11 +103,11 @@ def setup_train():
 
 
 def setup_logger():
-    global train_loss_logger, train_psnr_logger, val_loss_logger, val_psnr_logger
-    train_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train Loss"})
-    train_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Train PSNR"})
-    val_loss_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val Loss"})
-    val_psnr_logger = VisdomPlotLogger('line', opts={'title': f"{current_mode} Val PSNR"})
+    global train_loss_logger, train_psnr_logger, val_loss_logger, val_psnr_logger, env_name
+    train_loss_logger = VisdomPlotLogger('line', env=env_name, opts={'title': f"{current_mode} Train Loss"})
+    train_psnr_logger = VisdomPlotLogger('line', env=env_name, opts={'title': f"{current_mode} Train PSNR"})
+    val_loss_logger = VisdomPlotLogger('line', env=env_name, opts={'title': f"{current_mode} Val Loss"})
+    val_psnr_logger = VisdomPlotLogger('line', env=env_name, opts={'title': f"{current_mode} Val PSNR"})
 
 
 def train_engine():
@@ -121,12 +121,12 @@ def train_engine():
 
 
 def train(mode):
-    global current_mode
+    global current_mode, env_name
     current_mode = mode
     setup_train()
     setup_logger()
     train_engine()
-    VisdomSaver(envs=["main"]).save()
+    VisdomSaver(envs=[env_name]).save()
 
 
 if __name__ == "__main__":
@@ -144,6 +144,8 @@ if __name__ == "__main__":
 
     UPSCALE_FACTOR = opt.upscale_factor
     NUM_EPOCHS = opt.num_epochs
+
+    env_name = "oneOutputChannel"
 
     # train different modes
     current_mode = None
