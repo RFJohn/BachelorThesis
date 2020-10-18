@@ -48,8 +48,14 @@ class ShiftXYDataLoader(ShiftDataLoader):
         image, target = self.open_images(index)
         image = image.numpy()[0, :, :]
         target = target.numpy()[0, :, :]
+        
+        # stacks the input data with the corresponding x and y data
         first = np.stack([image, self.x_coords, self.y_coords], axis=2)
-        second = np.stack([target, self.original_x, self.original_y], axis=2)
+
+        # this is the one channel output
+        second = np.stack([target], axis=2)
+        # this is the output with x and y added to the targets
+        # second = np.stack([target, self.original_x, self.original_y], axis=2)
         first = transforms.ToTensor()(first)
         second = transforms.ToTensor()(second)
         return first, second
