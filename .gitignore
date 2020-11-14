@@ -134,3 +134,6 @@ dmypy.json
 
 # ignore all subdirectories of pycharm
 .idea/
+
+# ignore for now the results folder
+/results/
